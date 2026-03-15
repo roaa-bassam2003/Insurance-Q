@@ -15,10 +15,8 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'GROQ_API_KEY is not set in environment variables' });
   }
 
-  const url = 'https://api.groq.com/openai/v1/chat/completions';
-
   try {
-    const response = await fetch(url, {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,25 +36,15 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      const errorMessage = data.error?.message || data.error || JSON.stringify(data) || 'Groq API error';
-      console.error('Groq error details:', errorMessage, data);
-      return res.status(response.status).json({
-        error: errorMessage,
-        status: response.status,
-        details: data
-      });
+      return res.status(response.status).json({ error: data.error?.message || 'Groq API error', details: data });
     }
 
     const text = data.choices?.[0]?.message?.content || '';
-
-    if (!text) {
-      return res.status(500).json({ error: 'No content returned from model' });
-    }
+    if (!text) return res.status(500).json({ error: 'No content returned from model' });
 
     return res.status(200).json({ text });
 
   } catch (err) {
-    console.error('Server fetch error:', err);
     return res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }
