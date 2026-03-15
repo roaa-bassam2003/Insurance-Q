@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',          // ← التعديل المهم هنا
+        model: 'llama-3.3-70b-versatile',          // ← غيرناه إلى النسخة النشطة والأفضل حاليًا
 
         messages: [
           { role: 'system', content: systemPrompt },
@@ -40,18 +40,26 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      // تحسين الـ error handling عشان تشوف السبب الدقيق
-      const errorMessage = data.error?.message || data.error || 'Groq API error';
-      console.error('Groq API failed:', errorMessage, data); // ← يطلع في Vercel logs
-      return res.status(response.status).json({ error: errorMessage });
+      // تحسين: نرجع الخطأ الدقيق من Groq عشان تشوفه في الـ frontend
+      const errorMessage = data.error?.message || data.error || JSON.stringify(data) || 'Groq API error';
+      console.error('Groq error details:', errorMessage, data);  // يطلع في Vercel logs
+      return res.status(response.status).json({
+        error: errorMessage,
+        status: response.status,
+        details: data  // ← يساعد في الـ debugging
+      });
     }
 
     const text = data.choices?.[0]?.message?.content || '';
 
+    if (!text) {
+      return res.status(500).json({ error: 'No content returned from model' });
+    }
+
     return res.status(200).json({ text });
 
   } catch (err) {
-    console.error('Fetch error:', err);
+    console.error('Server fetch error:', err);
     return res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }
