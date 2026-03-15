@@ -396,40 +396,55 @@ async function submitCase() {
     });
 
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Server error');
+
+    if (!response.ok) {
+      throw new Error(data.error || data.details?.message || 'Server error ' + response.status);
+    }
 
     parsed = JSON.parse(data.text.replace(/```json|```/g, '').trim());
     renderResponse(parsed);
     actions.style.display = 'flex';
 
   } catch (err) {
+    let errorMsg = err.message;
+    if (data && (data.error || data.details)) {
+      errorMsg += ' — ' + (data.error || JSON.stringify(data.details || {}));
+    }
     container.innerHTML = '<div style="padding:1rem 1.2rem;margin:1rem;color:var(--danger);font-size:13px;background:var(--danger-light);border-radius:var(--radius);border:1px solid rgba(139,32,32,0.15);">'
       + '<div style="font-weight:600;margin-bottom:4px;">خطأ · Error</div>'
-      + '<div>' + escapeHtml(err.message) + '</div>'
+      + '<div dir="ltr">' + escapeHtml(errorMsg) + '</div>'
       + '</div>';
+  } finally {
+    btn.disabled = false;
+    arText.textContent = '✦ إنشاء رد الموافقة';
+    enText.textContent = 'Generate Authorization Response';
   }
-
-  btn.disabled = false;
-  arText.textContent = '✦ إنشاء رد الموافقة';
-  enText.textContent = 'Generate Authorization Response';
 }
 
 function renderResponse(p) {
   document.getElementById('response-container').innerHTML =
     '<div class="resp-grid">'
-    + '<div class="resp-block resp-block-ar"><div class="rb-tag tag-blue"><div class="rb-dot"></div><span class="rb-tag-ar">رد عربي</span><span class="rb-tag-en">· Arabic Reply</span></div><div class="rb-text">' + escapeHtml(p.ar) + '</div></div>'
-    + '<div class="resp-block resp-block-en"><div class="rb-tag tag-green"><div class="rb-dot"></div><span class="rb-tag-ar">رد إنجليزي</span><span class="rb-tag-en">· English Reply</span></div><div class="rb-text rb-text-en">' + escapeHtml(p.en) + '</div></div>'
-    + '<div class="resp-block resp-block-explain-ar resp-full"><div class="rb-tag tag-purple"><div class="rb-dot"></div><span class="rb-tag-ar">شرح السبب — عربي</span><span class="rb-tag-en">· Reasoning (Arabic)</span></div><div class="rb-text">' + escapeHtml(p.explainAr) + '</div></div>'
-    + '<div class="resp-block resp-block-explain-en resp-full"><div class="rb-tag tag-amber"><div class="rb-dot"></div><span class="rb-tag-ar">شرح السبب — إنجليزي</span><span class="rb-tag-en">· Reasoning (English)</span></div><div class="rb-text rb-text-en">' + escapeHtml(p.explainEn) + '</div></div>'
+    + '<div class="resp-block resp-block-ar"><div class="rb-tag tag-blue"><div class="rb-dot"></div><span class="rb-tag-ar">رد عربي</span><span class="rb-tag-en">· Arabic Reply</span></div><div class="rb-text">' + escapeHtml(p.ar || '—') + '</div></div>'
+    + '<div class="resp-block resp-block-en"><div class="rb-tag tag-green"><div class="rb-dot"></div><span class="rb-tag-ar">رد إنجليزي</span><span class="rb-tag-en">· English Reply</span></div><div class="rb-text rb-text-en">' + escapeHtml(p.en || '—') + '</div></div>'
+    + '<div class="resp-block resp-block-explain-ar resp-full"><div class="rb-tag tag-purple"><div class="rb-dot"></div><span class="rb-tag-ar">شرح السبب — عربي</span><span class="rb-tag-en">· Reasoning (Arabic)</span></div><div class="rb-text">' + escapeHtml(p.explainAr || '—') + '</div></div>'
+    + '<div class="resp-block resp-block-explain-en resp-full"><div class="rb-tag tag-amber"><div class="rb-dot"></div><span class="rb-tag-ar">شرح السبب — إنجليزي</span><span class="rb-tag-en">· Reasoning (English)</span></div><div class="rb-text rb-text-en">' + escapeHtml(p.explainEn || '—') + '</div></div>'
     + '</div>';
 }
 
 async function copySection(type) {
   const ids = { ar: 'copy-ar', en: 'copy-en', all: 'copy-all' };
   let text = type === 'ar' ? parsed.ar : type === 'en' ? parsed.en
-    : '[عربي]\n' + parsed.ar + '\n\n[English]\n' + parsed.en + '\n\n[شرح - عربي]\n' + parsed.explainAr + '\n\n[Reasoning - English]\n' + parsed.explainEn;
-  try { await navigator.clipboard.writeText(text); }
-  catch { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+    : '[عربي]\n' + (parsed.ar || '') + '\n\n[English]\n' + (parsed.en || '') + '\n\n[شرح - عربي]\n' + (parsed.explainAr || '') + '\n\n[Reasoning - English]\n' + (parsed.explainEn || '');
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
   const btn = document.getElementById(ids[type]);
   const orig = btn.innerHTML;
   btn.innerHTML = '<span class="bc-ar">✓ تم</span><span class="bc-en">Copied</span>';
@@ -440,5 +455,6 @@ function escapeHtml(t) {
   return (t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
 }
 </script>
+
 </body>
 </html>

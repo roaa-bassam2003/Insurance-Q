@@ -9,7 +9,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing systemPrompt or userPrompt' });
   }
 
-  // غيّر هنا إلى اسم المتغير الجديد في Vercel
   const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
@@ -23,11 +22,10 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,   // ← مهم: Groq يستخدم Bearer token
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.1-70b-versatile',     // ← أفضل نموذج مجاني قوي حاليًا
-        // أو جرب: 'gemma2-27b-it' أو 'mixtral-8x7b-32768'
+        model: 'llama-3.3-70b-versatile',          // ← التعديل المهم هنا
 
         messages: [
           { role: 'system', content: systemPrompt },
@@ -35,26 +33,25 @@ export default async function handler(req, res) {
         ],
 
         temperature: 0.3,
-        max_tokens: 1000,          // ← maxOutputTokens → max_tokens
-        // top_p: 0.9,             // اختياري إذا تبي
-        // stream: false           // لو تبي streaming لاحقًا
+        max_tokens: 1000,
       }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({
-        error: data.error?.message || 'Groq API error'
-      });
+      // تحسين الـ error handling عشان تشوف السبب الدقيق
+      const errorMessage = data.error?.message || data.error || 'Groq API error';
+      console.error('Groq API failed:', errorMessage, data); // ← يطلع في Vercel logs
+      return res.status(response.status).json({ error: errorMessage });
     }
 
-    // استخراج النص من الرد (صيغة OpenAI)
     const text = data.choices?.[0]?.message?.content || '';
 
     return res.status(200).json({ text });
 
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error('Fetch error:', err);
+    return res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }
