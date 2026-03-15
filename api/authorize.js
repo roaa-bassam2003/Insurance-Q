@@ -25,13 +25,11 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',          // ← غيرناه إلى النسخة النشطة والأفضل حاليًا
-
+        model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user',   content: userPrompt }
         ],
-
         temperature: 0.3,
         max_tokens: 1000,
       }),
@@ -40,13 +38,12 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      // تحسين: نرجع الخطأ الدقيق من Groq عشان تشوفه في الـ frontend
       const errorMessage = data.error?.message || data.error || JSON.stringify(data) || 'Groq API error';
-      console.error('Groq error details:', errorMessage, data);  // يطلع في Vercel logs
+      console.error('Groq error details:', errorMessage, data);
       return res.status(response.status).json({
         error: errorMessage,
         status: response.status,
-        details: data  // ← يساعد في الـ debugging
+        details: data
       });
     }
 
