@@ -9,34 +9,49 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing systemPrompt or userPrompt' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  // غيّر هنا إلى اسم المتغير الجديد في Vercel
+  const apiKey = process.env.GROQ_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ error: 'GROQ_API_KEY is not set in environment variables' });
+  }
+
+  const url = 'https://api.groq.com/openai/v1/chat/completions';
 
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,   // ← مهم: Groq يستخدم Bearer token
+      },
       body: JSON.stringify({
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: systemPrompt + '\n\n' + userPrompt }]
-          }
+        model: 'llama-3.1-70b-versatile',     // ← أفضل نموذج مجاني قوي حاليًا
+        // أو جرب: 'gemma2-27b-it' أو 'mixtral-8x7b-32768'
+
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user',   content: userPrompt }
         ],
-        generationConfig: {
-          temperature: 0.3,
-          maxOutputTokens: 1000,
-        }
+
+        temperature: 0.3,
+        max_tokens: 1000,          // ← maxOutputTokens → max_tokens
+        // top_p: 0.9,             // اختياري إذا تبي
+        // stream: false           // لو تبي streaming لاحقًا
       }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: data.error?.message || 'Gemini API error' });
+      return res.status(response.status).json({
+        error: data.error?.message || 'Groq API error'
+      });
     }
 
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    // استخراج النص من الرد (صيغة OpenAI)
+    const text = data.choices?.[0]?.message?.content || '';
+
     return res.status(200).json({ text });
 
   } catch (err) {
