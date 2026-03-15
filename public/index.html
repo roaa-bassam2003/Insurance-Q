@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>موافق · Muwafaq — Insurance Authorization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F6F4EF; --surface: #FFFFFF; --surface2: #EFECEA; --border: #DDD9D0;
+  --text: #1A1916; --text2: #5A5750; --text3: #9A9790;
+  --accent: #1D3A5F; --accent-light: #E8EEF5;
+  --accent2: #2A6B4F; --accent2-light: #E5F2EC;
+  --danger: #8B2020; --danger-light: #FBF0F0;
+  --warn: #7A4A00; --warn-light: #FFF8EC;
+  --purple: #4A3580;
+  --radius: 10px; --radius-lg: 16px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.07);
+  --font-ar: 'IBM Plex Sans Arabic', sans-serif;
+  --font-en: 'IBM Plex Sans', sans-serif;
+}
+body { font-family: var(--font-ar); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+
+header { background: var(--accent); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 58px; position: sticky; top: 0; z-index: 100; }
+.logo { display: flex; align-items: center; gap: 10px; color: white; }
+.logo-mark { width: 30px; height: 30px; background: rgba(255,255,255,0.18); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+.logo-text-ar { font-size: 17px; font-weight: 600; }
+.logo-text-en { font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.65); font-family: var(--font-en); margin-top: 1px; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.header-sub-ar { font-size: 11px; color: rgba(255,255,255,0.7); }
+.header-sub-en { font-size: 10px; color: rgba(255,255,255,0.45); font-family: var(--font-en); }
+
+.container { max-width: 1120px; margin: 0 auto; padding: 1.8rem 1.5rem; display: grid; grid-template-columns: 1fr 430px; gap: 1.5rem; align-items: start; }
+@media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
+.card-header { padding: 1rem 1.4rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.card-icon { width: 32px; height: 32px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.icon-blue { background: var(--accent-light); }
+.icon-green { background: var(--accent2-light); }
+.card-title-ar { font-size: 14px; font-weight: 600; color: var(--text); }
+.card-title-en { font-size: 11px; color: var(--text3); font-family: var(--font-en); font-weight: 400; margin-top: 1px; }
+.card-body { padding: 1.4rem; }
+
+.bilabel { display: flex; align-items: baseline; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
+.bilabel-ar { font-size: 13px; font-weight: 500; color: var(--text2); }
+.bilabel-en { font-size: 11px; color: var(--text3); font-family: var(--font-en); font-weight: 400; }
+.req { color: var(--danger); font-size: 11px; }
+.opt-ar { font-size: 10px; color: var(--text3); }
+
+.tabs { display: flex; background: var(--surface2); border-radius: 8px; padding: 3px; gap: 2px; margin-bottom: 1.4rem; }
+.tab-btn { flex: 1; padding: 7px 10px; border: none; background: transparent; border-radius: 6px; font-family: var(--font-ar); cursor: pointer; transition: all 0.15s; text-align: center; }
+.tab-btn .tb-ar { font-size: 13px; font-weight: 500; color: var(--text2); display: block; }
+.tab-btn .tb-en { font-size: 10px; color: var(--text3); font-family: var(--font-en); display: block; margin-top: 1px; }
+.tab-btn.active { background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.tab-btn.active .tb-ar { color: var(--accent); }
+.tab-btn.active .tb-en { color: var(--accent); opacity: 0.7; }
+
+input[type="text"], textarea { width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--font-ar); font-size: 13.5px; color: var(--text); background: var(--surface); transition: border-color 0.15s, box-shadow 0.15s; outline: none; resize: vertical; }
+input[type="text"]:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(29,58,95,0.07); }
+textarea { min-height: 85px; }
+.form-group { margin-bottom: 1rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+@media (max-width: 580px) { .form-row { grid-template-columns: 1fr; } }
+
+.sec-divider { display: flex; align-items: center; gap: 8px; margin: 1.1rem 0 1rem; }
+.sec-divider::before, .sec-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.sec-divider-text { display: flex; flex-direction: column; align-items: center; }
+.sec-div-ar { font-size: 10px; color: var(--text3); font-weight: 500; white-space: nowrap; }
+.sec-div-en { font-size: 9px; color: var(--text3); font-family: var(--font-en); white-space: nowrap; opacity: 0.75; }
+
+.question-box { background: var(--accent-light); border: 1px solid rgba(29,58,95,0.13); border-radius: var(--radius); padding: 1rem 1.1rem; margin-top: 0.9rem; }
+.question-box textarea { background: white; border-color: rgba(29,58,95,0.18); min-height: 65px; }
+.fh-ar { font-size: 11px; color: var(--text3); line-height: 1.5; margin-top: 5px; }
+.fh-en { font-size: 10px; color: var(--text3); font-family: var(--font-en); line-height: 1.4; opacity: 0.85; }
+
+.hint-box { background: var(--warn-light); border: 1px solid rgba(122,74,0,0.18); border-radius: var(--radius); padding: 0.8rem 1rem; margin-bottom: 1rem; }
+.hb-ar { font-size: 12px; color: var(--warn); line-height: 1.6; }
+.hb-en { font-size: 11px; color: var(--warn); font-family: var(--font-en); opacity: 0.8; margin-top: 2px; line-height: 1.5; }
+
+.btn-submit { width: 100%; padding: 11px; background: var(--accent); color: white; border: none; border-radius: var(--radius); cursor: pointer; transition: background 0.15s, transform 0.1s; margin-top: 0.9rem; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.btn-submit:hover { background: #162E4D; }
+.btn-submit:active { transform: scale(0.99); }
+.btn-submit:disabled { background: var(--text3); cursor: not-allowed; }
+.btn-ar { font-family: var(--font-ar); font-size: 14px; font-weight: 600; }
+.btn-en { font-family: var(--font-en); font-size: 11px; font-weight: 400; opacity: 0.75; }
+
+.right-panel { display: flex; flex-direction: column; gap: 1.2rem; position: sticky; top: 74px; }
+
+.response-placeholder { color: var(--text3); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 150px; gap: 8px; text-align: center; padding: 1.5rem; }
+.rp-ar { font-size: 13px; }
+.rp-en { font-size: 11px; font-family: var(--font-en); opacity: 0.7; }
+.resp-icon { width: 38px; height: 38px; background: var(--surface2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+.resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; padding: 1rem; }
+.resp-full { grid-column: 1 / -1; }
+.resp-block { border-radius: var(--radius); padding: 0.85rem; border: 1px solid transparent; }
+.resp-block-ar { background: #F0F5FB; border-color: rgba(29,58,95,0.12); }
+.resp-block-en { background: #F0F5F2; border-color: rgba(42,107,79,0.12); }
+.resp-block-explain-ar { background: #F5F3FC; border-color: rgba(74,53,128,0.12); }
+.resp-block-explain-en { background: #FEFAF2; border-color: rgba(122,74,0,0.12); }
+
+.rb-tag { display: flex; align-items: center; gap: 5px; margin-bottom: 6px; }
+.rb-tag-ar { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+.rb-tag-en { font-size: 9px; font-family: var(--font-en); font-weight: 500; opacity: 0.65; }
+.rb-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.tag-blue .rb-tag-ar { color: var(--accent); } .tag-blue .rb-dot { background: var(--accent); }
+.tag-green .rb-tag-ar { color: var(--accent2); } .tag-green .rb-dot { background: var(--accent2); }
+.tag-purple .rb-tag-ar { color: var(--purple); } .tag-purple .rb-dot { background: var(--purple); }
+.tag-amber .rb-tag-ar { color: var(--warn); } .tag-amber .rb-dot { background: var(--warn); }
+.rb-text { font-size: 12.5px; line-height: 1.7; color: var(--text); }
+.rb-text-en { font-family: var(--font-en); font-size: 12px; direction: ltr; text-align: left; }
+
+.response-actions { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1rem; border-top: 1px solid var(--border); background: var(--surface2); flex-wrap: wrap; gap: 6px; }
+.status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-ready { background: var(--accent2-light); color: var(--accent2); }
+.dot-ind { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.badge-ready-en { font-family: var(--font-en); font-size: 9px; opacity: 0.75; }
+.copy-btns { display: flex; gap: 5px; }
+.btn-copy { display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 7px; cursor: pointer; transition: background 0.12s; font-family: var(--font-ar); }
+.btn-copy:hover { background: var(--border); }
+.bc-ar { font-size: 11px; color: var(--text2); font-weight: 500; }
+.bc-en { font-size: 9px; color: var(--text3); font-family: var(--font-en); }
+
+.loading-dots { display: flex; gap: 5px; align-items: center; justify-content: center; padding: 2.5rem; }
+.loading-dots span { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s infinite; }
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,80%,100% { transform: translateY(0); opacity: 0.35; } 40% { transform: translateY(-7px); opacity: 1; } }
+
+.tip-row { display: flex; flex-direction: column; gap: 1px; margin-bottom: 0.8rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+.tip-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.tip-ar { font-size: 12.5px; color: var(--text2); line-height: 1.5; }
+.tip-en { font-size: 11px; color: var(--text3); font-family: var(--font-en); line-height: 1.4; }
+
+footer { text-align: center; padding: 1.5rem 2rem; border-top: 1px solid var(--border); margin-top: 1.5rem; }
+.footer-ar { font-size: 11px; color: var(--text3); }
+.footer-en { font-size: 10px; color: var(--text3); font-family: var(--font-en); opacity: 0.7; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">⚕</div>
+    <div>
+      <div class="logo-text-ar">موافق</div>
+      <div class="logo-text-en">Muwafaq</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-sub-ar">مساعد موافقات التأمين الطبي</div>
+    <div class="header-sub-en">Medical Insurance Authorization Assistant</div>
+  </div>
+</header>
+
+<div class="container">
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-blue">📋</div>
+        <div>
+          <div class="card-title-ar">بيانات الحالة الطبية</div>
+          <div class="card-title-en">Patient Medical Data</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('structured')">
+            <span class="tb-ar">حقول منفصلة</span>
+            <span class="tb-en">Separate Fields</span>
+          </button>
+          <button class="tab-btn" onclick="switchTab('free')">
+            <span class="tb-ar">نص حر</span>
+            <span class="tb-en">Free Text</span>
+          </button>
+        </div>
+
+        <div id="tab-structured">
+          <div class="form-group">
+            <div class="bilabel">
+              <span class="bilabel-ar">الشكوى والفحص السريري</span>
+              <span class="bilabel-en">Complaint &amp; Clinical Examination</span>
+              <span class="req">*</span>
+            </div>
+            <textarea id="s-complaint" placeholder="الشكوى الرئيسية، المدة، الأعراض، نتائج الفحص / Chief complaint, duration, symptoms, exam findings..."></textarea>
+          </div>
+          <div class="form-group">
+            <div class="bilabel">
+              <span class="bilabel-ar">التشخيص</span>
+              <span class="bilabel-en">Diagnosis</span>
+              <span class="req">*</span>
+            </div>
+            <input type="text" id="s-diagnosis" placeholder="مثال: التهاب المرارة الحاد K81.0 / e.g. Acute Cholecystitis K81.0">
+          </div>
+          <div class="sec-divider">
+            <div class="sec-divider-text">
+              <span class="sec-div-ar">بيانات إضافية — اختيارية</span>
+              <span class="sec-div-en">Additional Data — Optional</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <div class="bilabel"><span class="bilabel-ar">خطة العلاج</span><span class="bilabel-en">Treatment Plan</span><span class="opt-ar">(اختياري)</span></div>
+              <textarea id="s-treatment" placeholder="الإجراءات، الأدوية / Procedures, medications..." style="min-height:70px;"></textarea>
+            </div>
+            <div class="form-group">
+              <div class="bilabel"><span class="bilabel-ar">التاريخ المرضي والجراحي</span><span class="bilabel-en">Past &amp; Surgical History</span><span class="opt-ar">(اختياري)</span></div>
+              <textarea id="s-history" placeholder="أمراض سابقة، عمليات / Prior conditions, surgeries..." style="min-height:70px;"></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <div class="bilabel"><span class="bilabel-ar">الفحص البدني</span><span class="bilabel-en">Physical Examination</span><span class="opt-ar">(اختياري)</span></div>
+              <textarea id="s-physical" placeholder="العلامات الحيوية، الفحص الجسدي / Vitals, physical findings..." style="min-height:70px;"></textarea>
+            </div>
+            <div class="form-group">
+              <div class="bilabel"><span class="bilabel-ar">تاريخ المرض الحالي</span><span class="bilabel-en">Present Illness History</span><span class="opt-ar">(اختياري)</span></div>
+              <textarea id="s-present" placeholder="بداية الأعراض وتطورها / Onset and progression..." style="min-height:70px;"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-free" style="display:none;">
+          <div class="hint-box">
+            <div class="hb-ar">💡 اكتب كل المعلومات في حقل واحد والنظام سيستخرج البيانات تلقائياً. الشكوى والتشخيص مطلوبان كحد أدنى.</div>
+            <div class="hb-en">Type all info in one field — system extracts data automatically. Complaint and diagnosis are minimum required.</div>
+          </div>
+          <div class="form-group">
+            <div class="bilabel"><span class="bilabel-ar">النص الطبي الكامل</span><span class="bilabel-en">Full Medical Text</span><span class="req">*</span></div>
+            <textarea id="f-free" style="min-height:190px;font-size:13px;" placeholder="مثال: مريض 45 سنة يشكو من ألم بطني. التشخيص: التهاب مرارة حاد. خطة العلاج: استئصال المرارة بالمنظار..."></textarea>
+          </div>
+        </div>
+
+        <div class="question-box">
+          <div class="bilabel" style="margin-bottom:6px;">
+            <span class="bilabel-ar" style="color:var(--accent);font-weight:600;">سؤال شركة التأمين</span>
+            <span class="bilabel-en" style="color:var(--accent);opacity:0.75;">Insurance Company Question</span>
+            <span class="opt-ar">(اختياري / Optional)</span>
+          </div>
+          <textarea id="insurance-question" placeholder="مثال: هل يوجد أشعة حديثة؟ ما مدة الإقامة؟ هل الحالة Borderline? / e.g. Is recent imaging available? Expected LOS? Borderline case?"></textarea>
+          <div class="fh-ar">إذا طُلبت تحاليل أو أشعة، يحدد النظام ضرورتها ومدة صلاحيتها الطبية المقبولة.</div>
+          <div class="fh-en">If labs/imaging requested, system determines necessity and acceptable validity period.</div>
+        </div>
+
+        <button class="btn-submit" onclick="submitCase()" id="submit-btn">
+          <span class="btn-ar" id="btn-ar-text">✦ إنشاء رد الموافقة</span>
+          <span class="btn-en" id="btn-en-text">Generate Authorization Response</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-green">💬</div>
+        <div>
+          <div class="card-title-ar">رد الموافقة</div>
+          <div class="card-title-en">Authorization Response</div>
+        </div>
+      </div>
+      <div id="response-container">
+        <div class="response-placeholder">
+          <div class="resp-icon">⚕</div>
+          <div class="rp-ar">أدخل بيانات الحالة واضغط إنشاء</div>
+          <div class="rp-en">Enter case data and click Generate</div>
+        </div>
+      </div>
+      <div class="response-actions" id="response-actions" style="display:none;">
+        <div class="status-badge badge-ready">
+          <span class="dot-ind"></span>
+          <span>جاهز للإرسال</span>
+          <span class="badge-ready-en">· Ready to Send</span>
+        </div>
+        <div class="copy-btns">
+          <button class="btn-copy" onclick="copySection('ar')" id="copy-ar"><span class="bc-ar">📋 عربي</span><span class="bc-en">AR</span></button>
+          <button class="btn-copy" onclick="copySection('en')" id="copy-en"><span class="bc-ar">📋 إنجليزي</span><span class="bc-en">EN</span></button>
+          <button class="btn-copy" onclick="copySection('all')" id="copy-all"><span class="bc-ar">📋 الكل</span><span class="bc-en">All</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#FFF8EC;font-size:14px;">💡</div>
+        <div>
+          <div class="card-title-ar">نصائح الاستخدام</div>
+          <div class="card-title-en">Usage Tips</div>
+        </div>
+      </div>
+      <div class="card-body" style="padding:1rem 1.4rem;">
+        <div class="tip-row">
+          <div class="tip-ar">• <strong>المطلوب فقط:</strong> الشكوى والتشخيص كحد أدنى.</div>
+          <div class="tip-en">• <strong>Required only:</strong> Complaint &amp; diagnosis minimum.</div>
+        </div>
+        <div class="tip-row">
+          <div class="tip-ar">• <strong>الرد 4 أجزاء:</strong> عربي مختصر، إنجليزي مختصر، شرح بالعربي، شرح بالإنجليزي.</div>
+          <div class="tip-en">• <strong>4-part reply:</strong> Short AR, short EN, reasoning AR, reasoning EN.</div>
+        </div>
+        <div class="tip-row">
+          <div class="tip-ar">• <strong>الأشعة والتحاليل:</strong> اكتب السؤال وسيحدد النظام صلاحيتها الزمنية.</div>
+          <div class="tip-en">• <strong>Labs/Imaging:</strong> System auto-determines validity period.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-ar">موافق · مساعد موافقات التأمين الطبي · للاستخدام المهني وتخضع لمراجعة الطبيب المسؤول</div>
+  <div class="footer-en">Muwafaq · Medical Insurance Authorization Assistant · For professional use, subject to physician review</div>
+</footer>
+
+<script>
+let currentTab = 'structured';
+let parsed = { ar: '', en: '', explainAr: '', explainEn: '' };
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', (i === 0 && tab === 'structured') || (i === 1 && tab === 'free'));
+  });
+  document.getElementById('tab-structured').style.display = tab === 'structured' ? 'block' : 'none';
+  document.getElementById('tab-free').style.display = tab === 'free' ? 'block' : 'none';
+}
+
+function buildPromptData() {
+  const question = document.getElementById('insurance-question').value.trim();
+  let medicalData = '';
+
+  if (currentTab === 'structured') {
+    const complaint = document.getElementById('s-complaint').value.trim();
+    const diagnosis = document.getElementById('s-diagnosis').value.trim();
+    if (!complaint || !diagnosis) {
+      alert('الرجاء إدخال الشكوى والتشخيص\nPlease enter complaint and diagnosis');
+      return null;
+    }
+    medicalData = 'الشكوى والفحص: ' + complaint + '\nالتشخيص: ' + diagnosis;
+    const t = document.getElementById('s-treatment').value.trim();
+    const h = document.getElementById('s-history').value.trim();
+    const p = document.getElementById('s-physical').value.trim();
+    const pr = document.getElementById('s-present').value.trim();
+    if (t) medicalData += '\nخطة العلاج: ' + t;
+    if (h) medicalData += '\nالتاريخ المرضي والجراحي: ' + h;
+    if (p) medicalData += '\nالفحص البدني: ' + p;
+    if (pr) medicalData += '\nتاريخ المرض الحالي: ' + pr;
+  } else {
+    const free = document.getElementById('f-free').value.trim();
+    if (!free) { alert('الرجاء إدخال النص الطبي\nPlease enter medical text'); return null; }
+    medicalData = free;
+  }
+
+  const systemPrompt = `You are a medical insurance authorization specialist. Based on the provided clinical data, generate a concise authorization response in EXACTLY this JSON format (pure JSON only, no markdown, no backticks, no extra text):
+
+{"ar":"...","en":"...","explainAr":"...","explainEn":"..."}
+
+Rules:
+- "ar": 2-3 short sentences in Arabic. Direct, ready to send to insurance. Justify medical necessity.
+- "en": 2-3 short sentences in English. Direct, ready to send. Same content as ar.
+- "explainAr": 3-4 sentences in Arabic explaining clinical reasoning and justification.
+- "explainEn": 3-4 sentences in English explaining the clinical reasoning.
+- If labs or imaging are requested: state whether medically indicated AND specify acceptable validity window (e.g. CBC within 48h, CT within 30 days).
+- Respond with valid JSON ONLY. No text outside the JSON object.`;
+
+  let userPrompt = 'Medical data:\n' + medicalData;
+  if (question) userPrompt += '\n\nInsurance question: ' + question;
+
+  return { systemPrompt, userPrompt };
+}
+
+async function submitCase() {
+  const promptData = buildPromptData();
+  if (!promptData) return;
+
+  const btn = document.getElementById('submit-btn');
+  const arText = document.getElementById('btn-ar-text');
+  const enText = document.getElementById('btn-en-text');
+  const container = document.getElementById('response-container');
+  const actions = document.getElementById('response-actions');
+
+  btn.disabled = true;
+  arText.textContent = 'جاري المعالجة...';
+  enText.textContent = 'Processing...';
+  actions.style.display = 'none';
+  container.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+
+  try {
+    const response = await fetch('/api/authorize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ systemPrompt: promptData.systemPrompt, userPrompt: promptData.userPrompt }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Server error');
+
+    parsed = JSON.parse(data.text.replace(/```json|```/g, '').trim());
+    renderResponse(parsed);
+    actions.style.display = 'flex';
+
+  } catch (err) {
+    container.innerHTML = '<div style="padding:1rem 1.2rem;margin:1rem;color:var(--danger);font-size:13px;background:var(--danger-light);border-radius:var(--radius);border:1px solid rgba(139,32,32,0.15);">'
+      + '<div style="font-weight:600;margin-bottom:4px;">خطأ · Error</div>'
+      + '<div>' + escapeHtml(err.message) + '</div>'
+      + '</div>';
+  }
+
+  btn.disabled = false;
+  arText.textContent = '✦ إنشاء رد الموافقة';
+  enText.textContent = 'Generate Authorization Response';
+}
+
+function renderResponse(p) {
+  document.getElementById('response-container').innerHTML =
+    '<div class="resp-grid">'
+    + '<div class="resp-block resp-block-ar"><div class="rb-tag tag-blue"><div class="rb-dot"></div><span class="rb-tag-ar">رد عربي</span><span class="rb-tag-en">· Arabic Reply</span></div><div class="rb-text">' + escapeHtml(p.ar) + '</div></div>'
+    + '<div class="resp-block resp-block-en"><div class="rb-tag tag-green"><div class="rb-dot"></div><span class="rb-tag-ar">رد إنجليزي</span><span class="rb-tag-en">· English Reply</span></div><div class="rb-text rb-text-en">' + escapeHtml(p.en) + '</div></div>'
+    + '<div class="resp-block resp-block-explain-ar resp-full"><div class="rb-tag tag-purple"><div class="rb-dot"></div><span class="rb-tag-ar">شرح السبب — عربي</span><span class="rb-tag-en">· Reasoning (Arabic)</span></div><div class="rb-text">' + escapeHtml(p.explainAr) + '</div></div>'
+    + '<div class="resp-block resp-block-explain-en resp-full"><div class="rb-tag tag-amber"><div class="rb-dot"></div><span class="rb-tag-ar">شرح السبب — إنجليزي</span><span class="rb-tag-en">· Reasoning (English)</span></div><div class="rb-text rb-text-en">' + escapeHtml(p.explainEn) + '</div></div>'
+    + '</div>';
+}
+
+async function copySection(type) {
+  const ids = { ar: 'copy-ar', en: 'copy-en', all: 'copy-all' };
+  let text = type === 'ar' ? parsed.ar : type === 'en' ? parsed.en
+    : '[عربي]\n' + parsed.ar + '\n\n[English]\n' + parsed.en + '\n\n[شرح - عربي]\n' + parsed.explainAr + '\n\n[Reasoning - English]\n' + parsed.explainEn;
+  try { await navigator.clipboard.writeText(text); }
+  catch { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+  const btn = document.getElementById(ids[type]);
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span class="bc-ar">✓ تم</span><span class="bc-en">Copied</span>';
+  setTimeout(() => { btn.innerHTML = orig; }, 2000);
+}
+
+function escapeHtml(t) {
+  return (t || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+</script>
+</body>
+</html>
